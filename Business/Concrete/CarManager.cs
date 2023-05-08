@@ -3,8 +3,8 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
-using Core.Utilities.Abstract;
-using Core.Utilities.Concrete;
+using Core.Utilities.Results.Abstract;
+using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -68,7 +68,7 @@ namespace Business.Concrete
         }
         public IDataResult<Car> GetById(int id)
         {
-            var car = _carDal.Get(i => i.ID == id);
+            var car = _carDal.Get(i => i.CarId == id);
             return new SuccessDataResult<Car>(car);
         }
 

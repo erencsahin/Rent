@@ -4,24 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Utilities.Concrete
+namespace Core.Utilities.Results.Concrete
 {
-    public class ErrorDataResult<T>:DataResult<T>
+    public class SuccessDataResult<T> : DataResult<T>
     {
         //burada 4 farklı dönüş durumu oluşturduk hepsini kullanabiliriz.
-        public ErrorDataResult(T data, string message) : base(data, false, message)
+        public SuccessDataResult(T data, string message) : base(data, true, message)
         {
             //ister data ve mesaj ver.
         }
-        public ErrorDataResult(T data) : base(data, false)
+        public SuccessDataResult(T data) : base(data, true)
         {
             //ister sadece data ver.
         }
-        public ErrorDataResult(string message) : base(default, false, message)
+        public SuccessDataResult(string message) : base(default, true, message)
         {
             //ister sadece mesaj ver.
         }
-        public ErrorDataResult() : base(default, false)
+        public SuccessDataResult() : base(default, true)
         {
             //ister hiçbir şey verme.
         }

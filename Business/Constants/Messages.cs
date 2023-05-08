@@ -43,5 +43,7 @@ namespace Business.Constants
         public static string UserUpdated = "User has been updated.";
         public static string UsersListed = "Users has been listed.";
         public static string UserListedByFiltered = "User listed by your choice.";
+
+        public static string CarImageLimit = "Has been reached image limit";
     }
 }
