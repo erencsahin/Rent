@@ -5,11 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Concrete
+namespace Core.Utilities.Security.Jwt
 {
-    public class Brand:IEntity
+    public interface ITokenHelper
     {
-        public int BrandId { get; set; }
-        public string BrandName { get; set; }
+        AccessToken CreateToken(User user, List<OperationClaim> operationClaims);
     }
 }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Core.DataAccess.EntityFramework.EfEntityRepositoryBase
 {
     public class EfEntityRepositoryBase<TEntity,TContext>:IEntitiyRepository<TEntity>
-        where TEntity : class,IEntitiy, new()
+        where TEntity : class,IEntity, new()
         where TContext: DbContext,new()
     {
         public void Add(TEntity entity)

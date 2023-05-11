@@ -18,11 +18,11 @@ namespace DataAccess.Concrete.InMemory
         {
             _cars= new List<Car>
             {
-                new Car{CarId=1,BrandId=1,ColorId=1,DailyPrice=550,ModelYear=2021,Description="Ekonomik Renault Clio."},
-                new Car{CarId=2,BrandId=1,ColorId=1,DailyPrice=799,ModelYear=2020,Description="Konfor Renault Megane."},
-                new Car{CarId=3,BrandId=2,ColorId=1,DailyPrice=1017,ModelYear=2022,Description="Prestij Ford Kuga."},
-                new Car{CarId=4,BrandId=3,ColorId=1,DailyPrice=1460,ModelYear=2021,Description="Premium Peugeot 5008."},
-                new Car{CarId=5,BrandId=4,ColorId=1,DailyPrice=4951,ModelYear=2022,Description="Lüks Volvo XC90."}
+                new Car{ID=1,BrandId=1,ColorId=1,DailyPrice=550,ModelYear=2021,Description="Ekonomik Renault Clio."},
+                new Car{ID=2,BrandId=1,ColorId=1,DailyPrice=799,ModelYear=2020,Description="Konfor Renault Megane."},
+                new Car{ID=3,BrandId=2,ColorId=1,DailyPrice=1017,ModelYear=2022,Description="Prestij Ford Kuga."},
+                new Car{ID=4,BrandId=3,ColorId=1,DailyPrice=1460,ModelYear=2021,Description="Premium Peugeot 5008."},
+                new Car{ID=5,BrandId=4,ColorId=1,DailyPrice=4951,ModelYear=2022,Description="Lüks Volvo XC90."}
             };
         }
         public void Add(Car car)
@@ -34,7 +34,7 @@ namespace DataAccess.Concrete.InMemory
         {
             //Referans numarası farklı oldugundan foreach ile bir referans değer oluşturup eşleştiği
             //zaman silmesi lazım bunun için de LINQ kullanmamız gerekiyor.
-            var result = _cars.SingleOrDefault(c => c.CarId == car.CarId);
+            var result = _cars.SingleOrDefault(c => c.ID == car.ID);
             _cars.Remove(result);
         }
 
@@ -60,7 +60,7 @@ namespace DataAccess.Concrete.InMemory
 
         public void Update(Car car)
         {
-            Car carToUpdate = _cars.SingleOrDefault(c => c.CarId == car.CarId);
+            Car carToUpdate = _cars.SingleOrDefault(c => c.ID == car.ID);
             carToUpdate.DailyPrice = car.DailyPrice;
             carToUpdate.ColorId = car.ColorId;
             carToUpdate.Description = car.Description;

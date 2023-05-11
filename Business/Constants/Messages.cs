@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,6 +45,15 @@ namespace Business.Constants
         public static string UsersListed = "Users has been listed.";
         public static string UserListedByFiltered = "User listed by your choice.";
 
-        public static string CarImageLimit = "Has been reached image limit";
+        public static string CarImageLimit = "Has been reached image limit.";
+        public static string AuthorizationDenied = "No authory.";
+
+
+        public static string UserRegistered = "User has been registered succesfully.";
+        public static string AccessTokenCreated = "User's token has been created succesfully.";
+        public static string PasswordError = "Wrong password.";
+        public static string SuccessfulLogin = "User has been login succesfully.";
+        public static string UserAlreadyExists = "User already exist.";
+        public static string UserNotFound = "User not found.";
     }
 }

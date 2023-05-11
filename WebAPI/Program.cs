@@ -3,8 +3,13 @@ using Autofac.Extensions.DependencyInjection;
 using Business.Abstract;
 using Business.Concrete;
 using Business.DependencyResolvers.Autofac;
+using Core.Utilities.IoC;
+using Core.Utilities.Security.Encryption;
+using Core.Utilities.Security.Jwt;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 internal class Program
 {
@@ -26,19 +31,33 @@ internal class Program
         //IoC yi bu þekilde oluþturuyoruz burda yaptýgýmýz þeyin argosu þudur: Birisi senden IProductService isterse ona ProductManager oluþtur ve o referansý ver.
         //IoC bunu saðlar.
 
-
-        //builder.Services.AddSingleton<ICarDal, EfCarDal>();
-        //builder.Services.AddSingleton<IBrandDal ,EfBrandDal>();
-        //builder.Services.AddSingleton<IColorDal , EfColorDal>();
-        //builder.Services.AddSingleton<ICustomerDal , EfCustomerDal>();
-        //builder.Services.AddSingleton<IRentalDal , EfRentalDal>();
-        //builder.Services.AddSingleton<IUserDal, EfUserDal>();
         builder.Host.UseServiceProviderFactory(services => new AutofacServiceProviderFactory())
             .ConfigureContainer<ContainerBuilder>
             (builder =>
             { 
                 builder.RegisterModule(new AutofacBusinessModule()); 
             });
+        builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                            .AddJwtBearer(options =>
+                            {
+                                options.TokenValidationParameters = new TokenValidationParameters
+                                {
+                                    ValidateIssuer = true,
+                                    ValidateAudience = true,
+                                    ValidateLifetime = true,
+                                    ValidIssuer = tokenOptions.Issuer,
+                                    ValidAudience = tokenOptions.Audience,
+                                    ValidateIssuerSigningKey = true,
+                                    IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
+                                };
+                            });
+        ServiceTool.Create(builder.Services);
+
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
 
 
         var app = builder.Build();
@@ -46,14 +65,15 @@ internal class Program
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
-            app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.UseAuthentication();
 
         app.UseAuthorization();
 
