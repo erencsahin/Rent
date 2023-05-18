@@ -21,5 +21,7 @@ namespace Business.Abstract
         IResult Update(Car car);
         IDataResult<List<CarDetailDto>> GetCarDetails();
         IDataResult<Car> GetById(int id);
+        IResult TransactionalOperation(Car car);
+
     }
 }

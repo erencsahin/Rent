@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
@@ -35,11 +36,13 @@ namespace Business.Concrete
             _brandDal.Delete(brand);
             return new Result(true, Messages.DeleteBrand);
         }
+        [CacheAspect]
         public IDataResult<List<Brand>> GetAll()
         {
 
             return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(), Messages.BrandsListed);
         }
+        [CacheAspect]
         public IDataResult<Brand> GetById(int id)
         {
             return new SuccessDataResult<Brand>(_brandDal.Get(b=>b.BrandId == id));

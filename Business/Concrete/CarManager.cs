@@ -1,8 +1,12 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.BusinessRules;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -14,6 +18,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http.Headers;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,10 +33,17 @@ namespace Business.Concrete
             _carDal = carDal;
         }
 
+        [SecuredOperation("admin,moderator")]
         [ValidationAspect(typeof(CarValidator))]
-        //28.satırın anlamı şu; Add methodu CarValidator kullanarak doğrula.
+        //33.satırın anlamı şu; Add methodu CarValidator kullanarak doğrula.
+        [CacheRemoveAspect("ICarService.Get")]
         public IResult Add(Car car)
         {
+            IResult result = BusinessRules.Run(CheckCarDescription(car.Description));
+            if (result != null)
+            {
+                return result;
+            }
             _carDal.Add(car);
             return new Result(true, Messages.CarAdded);
         }
@@ -41,6 +54,7 @@ namespace Business.Concrete
             return new Result(true, Messages.CarDeleted);
         }
 
+        [CacheAspect]
         public IDataResult<List<Car>> GetAll()
         {
             //iş kodları.
@@ -61,11 +75,13 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails());
         }
+        [CacheRemoveAspect("ICarService.Get")]
         public IResult Update(Car car)
         {
             _carDal.Update(car);
             return new Result(true, Messages.CarUpdated);
         }
+        [CacheAspect]
         public IDataResult<Car> GetById(int id)
         {
             var car = _carDal.Get(i => i.ID == id);
@@ -81,6 +97,26 @@ namespace Business.Concrete
         public IDataResult<List<Car>> GetByBrand(int brandId)
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(b => b.BrandId == brandId));
+        }
+
+        private IResult CheckCarDescription(string description)
+        {
+            var result = _carDal.GetAll(d=>d.Description == description).Any();
+            if (result)
+            {
+                return new ErrorResult(Messages.CarAlreadyExists);
+            }
+
+            return new SuccessResult();
+        }
+
+        [TransactionScopeAspect]
+        public IResult TransactionalOperation(Car car)
+        {
+            _carDal.Update(car);
+            _carDal.Add(car);
+            return new SuccessResult(Messages.CarUpdated);
+
         }
     }
 }

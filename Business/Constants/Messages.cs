@@ -18,6 +18,8 @@ namespace Business.Constants
         public static string CarUpdated = "Car has been updated.";
         public static string MaintenanceTime = "We are in maintenance time.";
         public static string CarsListed = "Cars has been listed.";
+        public static string CarAlreadyExists = "Car already exist.";
+
 
         public static string BrandsListed = "Brands has been listed.";
         public static string AddBrand = "Brand has been added.";
